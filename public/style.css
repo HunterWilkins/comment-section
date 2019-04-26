@@ -1,0 +1,9 @@
+.articles{
+    float:left;
+    width:45%;
+}
+
+.comments{
+    float:right;
+    width:45%;
+}
