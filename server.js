@@ -15,25 +15,23 @@ app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 
 app.use(express.static("public"));
-
-mongoose.connect("mongodb://localhost/commentSection", {useNewUrlParser:true});
+//changed from commentSection to commentSect to make a new database
+mongoose.connect("mongodb://localhost/commentSect", {useNewUrlParser:true});
 
 // app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 // app.set("view engine", "handlebars");
 
 // Routes = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 app.get("/scrape", function(req, res){
-    axios.get("https://therighttriggerreviews.blogspot.com/").then(function(response){
+    axios.get("https://www.gameinformer.com/").then(function(response){
         var $ = cheerio.load(response.data);
-        $("ul>li").each(function(i, element){
+        $(".article-summary").each(function(i, element){
             var result = {};
-
-            result.title=$(this)
-            .children("a").text();
-
-            result.link=$(this)
-            .children("a").attr("href");
-            
+            result.title = $(this).children("h2.page-title").text();
+        
+            result.link = "https://www.gameinformer.com" + $(this).children("h2.page-title").children("a").attr("href");
+                
+            result.summary = $(this).children(".promo-summary").text();
             db.Article.create(result)
             .then(function(dbArticle){
                 console.log(dbArticle);
@@ -41,7 +39,7 @@ app.get("/scrape", function(req, res){
             .catch(function(err){
                 console.log(err);
             });
-        
+            
         });
 
         
@@ -83,6 +81,13 @@ app.post("/articles/:id", function(req,res){
     .catch(function(err){
         res.json(err);
     });
+});
+
+app.get("/delete", function(req, res){
+    db.articles.remove({});
+    db.articles.find({}).then(function(dbArticle){
+        res.json(dbArticle);
+    })
 });
 
 app.listen(PORT, function(){

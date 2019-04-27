@@ -5,6 +5,7 @@ $.getJSON("/articles", function(data){
             `
             <p id="${data[i]._id}">${data[i].title}</p>
             <a href = "${data[i].link}">Link to Original Article</a>
+            <p>${data[i].summary}</p>
             `);
 
     }
@@ -32,29 +33,28 @@ $(document).on("click", "p", function(){
         if (data.comment !== null) {
             $("#comment-title-input").val(data.comment[0].title);
             $("#comment-body-input").val(data.comment[0].body);
-
             for (var i = 0; i <data.comment.length; i++){
                 console.log("All the comments' Titles: " + data.comment[i].title);
             }
         }
     });
-
-    $(document).on("click", "#save-comment", function(){
-        var thisIdDawg = $(this).attr("data-id");
-        console.log("The Title of the Comment: " + $("#comment-title-input").val() + "\nThe Body of the Comment: " + $("#comment-body-input").val());
-        $.ajax({
-            method: "POST",
-            url: "/articles/" + thisIdDawg,
-            data:{
-                title: $("#comment-title-input").val(),
-                body: $("#comment-body-input").val()
-            }
-        }).then(function(data){
-            console.log(data);
-        });
-    });
-
+    
     $("#comment-title-input").val("");
     $("#comment-body-input").val("");
 
+});
+
+$(document).on("click", "#save-comment", function(){
+    var thisIdDawg = $(this).attr("data-id");
+    console.log("The Title of the Comment: " + $("#comment-title-input").val() + "\nThe Body of the Comment: " + $("#comment-body-input").val());
+    $.ajax({
+        method: "POST",
+        url: "/articles/" + thisIdDawg,
+        data:{
+            title: $("#comment-title-input").val(),
+            body: $("#comment-body-input").val()
+        }
+    }).then(function(data){
+        console.log(data);
+    });
 });
