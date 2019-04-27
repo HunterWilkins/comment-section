@@ -1,4 +1,5 @@
 var express = require("express");
+var exphbs = require("express-handlebars");
 var mongoose = require("mongoose");
 
 var PORT = 3000;
@@ -15,13 +16,21 @@ app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 
 app.use(express.static("public"));
+
+// app.engine(
+//     "handlebars",
+//     exphbs({
+//       defaultLayout: "main"
+//     })
+//   );
+//   app.set("view engine", "handlebars");
 //changed from commentSection to commentSect to make a new database
 mongoose.connect("mongodb://localhost/commentSect", {useNewUrlParser:true});
 
-// app.engine("handlebars", exphbs({ defaultLayout: "main" }));
-// app.set("view engine", "handlebars");
-
 // Routes = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+
+
 app.get("/scrape", function(req, res){
     axios.get("https://www.gameinformer.com/").then(function(response){
         var $ = cheerio.load(response.data);
@@ -39,10 +48,7 @@ app.get("/scrape", function(req, res){
             .catch(function(err){
                 console.log(err);
             });
-            
         });
-
-        
         res.send("The Relevant Info has been Scraped.");
     }); 
 });

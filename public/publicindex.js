@@ -3,15 +3,14 @@ $.getJSON("/articles", function(data){
     for (var i = 1; i < data.length; i++){
         $(".articles").append(
             `
-            <p id="${data[i]._id}">${data[i].title}</p>
+            <h1 class = "title" id="${data[i]._id}">${data[i].title}</h1>
             <a href = "${data[i].link}">Link to Original Article</a>
             <p>${data[i].summary}</p>
             `);
-
     }
 });
 
-$(document).on("click", "p", function(){
+$(document).on("click", ".title", function(){
     var thisIdDawg = $(this).attr("id");
 
     $.ajax({
@@ -31,11 +30,14 @@ $(document).on("click", "p", function(){
             `
         ); 
         if (data.comment !== null) {
+            for (var i = 0; i <data.comment.length; i++){
+                $("#all-comments").append(`<h3>${data.comment[i].title}</h3>`);
+                $("#all-comments").append(`<p>${data.comment[i].body}</p>`);
+            }
+            
             $("#comment-title-input").val(data.comment[0].title);
             $("#comment-body-input").val(data.comment[0].body);
-            for (var i = 0; i <data.comment.length; i++){
-                console.log("All the comments' Titles: " + data.comment[i].title);
-            }
+           
         }
     });
     
